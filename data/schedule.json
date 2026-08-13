@@ -1,0 +1,8 @@
+[
+  { "id": "s1", "date": "19 Dec 2026", "time": "1:00 PM", "fixture": "Colombo Capitals vs Mirissa Mavericks", "boatClass": "Men's Four" },
+  { "id": "s2", "date": "19 Dec 2026", "time": "2:15 PM", "fixture": "Galle Galleons vs Kandy Kings", "boatClass": "Women's Four" },
+  { "id": "s3", "date": "19 Dec 2026", "time": "3:30 PM", "fixture": "Sigiri Lions vs Trinco Titans", "boatClass": "Mixed Double" },
+  { "id": "s4", "date": "20 Dec 2026", "time": "1:00 PM", "fixture": "Semi-Final 1", "boatClass": "Men's Four" },
+  { "id": "s5", "date": "20 Dec 2026", "time": "2:15 PM", "fixture": "Semi-Final 2", "boatClass": "Women's Four" },
+  { "id": "s6", "date": "20 Dec 2026", "time": "4:00 PM", "fixture": "Grand Final", "boatClass": "Mixed Four" }
+]

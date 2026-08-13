@@ -1,0 +1,80 @@
+[
+  {
+    "slug": "colombo-capitals",
+    "name": "Colombo Capitals",
+    "city": "Colombo",
+    "logo": "/images/teams/colombo-capitals.png",
+    "colorPrimary": "#9f7543",
+    "colorSecondary": "#e4b277",
+    "tagline": "Capital pride, forged on the water.",
+    "bio": "Team profile coming soon.",
+    "socials": { "instagram": "", "facebook": "", "youtube": "", "tiktok": "" },
+    "squad": [],
+    "partners": []
+  },
+  {
+    "slug": "mirissa-mavericks",
+    "name": "Mirissa Mavericks",
+    "city": "Mirissa",
+    "logo": "/images/teams/mirissa-mavericks.png",
+    "colorPrimary": "#19cdd8",
+    "colorSecondary": "#e4b277",
+    "tagline": "Wild currents, fearless crews.",
+    "bio": "Team profile coming soon.",
+    "socials": { "instagram": "", "facebook": "", "youtube": "", "tiktok": "" },
+    "squad": [],
+    "partners": []
+  },
+  {
+    "slug": "galle-galleons",
+    "name": "Galle Galleons",
+    "city": "Galle",
+    "logo": "/images/teams/galle-galleons.png",
+    "colorPrimary": "#178e93",
+    "colorSecondary": "#e4b277",
+    "tagline": "Guarding the line since day one.",
+    "bio": "Team profile coming soon.",
+    "socials": { "instagram": "", "facebook": "", "youtube": "", "tiktok": "" },
+    "squad": [],
+    "partners": []
+  },
+  {
+    "slug": "kandy-kings",
+    "name": "Kandy Kings",
+    "city": "Kandy",
+    "logo": "/images/teams/kandy-kings.png",
+    "colorPrimary": "#dd1324",
+    "colorSecondary": "#e4b277",
+    "tagline": "Crowned by tradition, built to win.",
+    "bio": "Team profile coming soon.",
+    "socials": { "instagram": "", "facebook": "", "youtube": "", "tiktok": "" },
+    "squad": [],
+    "partners": []
+  },
+  {
+    "slug": "sigiri-lions",
+    "name": "Sigiri Lions",
+    "city": "Sigiriya",
+    "logo": "/images/teams/sigiri-lions.png",
+    "colorPrimary": "#c28d41",
+    "colorSecondary": "#e4b277",
+    "tagline": "Roaring out of the rock fortress.",
+    "bio": "Team profile coming soon.",
+    "socials": { "instagram": "", "facebook": "", "youtube": "", "tiktok": "" },
+    "squad": [],
+    "partners": []
+  },
+  {
+    "slug": "trinco-titans",
+    "name": "Trinco Titans",
+    "city": "Trincomalee",
+    "logo": "/images/teams/trinco-titans.png",
+    "colorPrimary": "#023a8e",
+    "colorSecondary": "#e4b277",
+    "tagline": "Ocean born, game driven.",
+    "bio": "Team profile coming soon.",
+    "socials": { "instagram": "", "facebook": "", "youtube": "", "tiktok": "" },
+    "squad": [],
+    "partners": []
+  }
+]

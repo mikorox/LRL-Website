@@ -1,0 +1,21 @@
+{
+  "siteName": "Lanka Rowing League",
+  "tagline": "",
+  "heroLine1": "A NEW ERA",
+  "heroLine2": "ON THE WATER",
+  "heroSubtitle": "The Lanka Rowing League is the country's first franchise-based rowing championship. Six franchises. Elite athletes. One championship.",
+  "heroMediaType": "image",
+  "heroMediaUrl": "/uploads/3ceafffd-1801-4483-8b57-1b67ea0c292a.png",
+  "registrationHeading": "Think You Have What It Takes?",
+  "registrationSubtitle": "Register now to join the official player pool and become eligible for the league's player draft.",
+  "championshipDate": "2026-12-19T13:00:00+05:30",
+  "venue": "Colombo Rowing Club",
+  "contactEmail": "inquiry@lankarowingleague.com",
+  "contactAddress": "Colombo, Sri Lanka",
+  "socials": {
+    "instagram": "https://www.instagram.com/lankarowingleague",
+    "facebook": "https://www.facebook.com/lankarowingleague",
+    "youtube": "https://www.youtube.com/@lankarowingleague",
+    "tiktok": "https://www.tiktok.com/@lankarowingleague"
+  }
+}

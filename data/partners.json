@@ -1,0 +1,56 @@
+{
+  "title": [
+    {
+      "id": "f988500f-8e0e-4cec-ad41-9d20fef10207",
+      "name": "Title Partner",
+      "logoUrl": "/uploads/2ddc7634-aff0-40c5-b852-e6710cb0f24c.png",
+      "url": ""
+    }
+  ],
+  "poweredBy": [],
+  "broadcast": [],
+  "associate": [
+    {
+      "id": "4a41cf4c-c174-40fb-ad83-bf000133b814",
+      "name": "Venue Partner",
+      "logoUrl": "/uploads/6374bf2a-52ec-455a-aad7-769605632625.png",
+      "url": ""
+    },
+    {
+      "id": "e3ab790d-9af6-4b76-85e7-5d8bcc646d76",
+      "name": "Broadcast Partner",
+      "logoUrl": "/uploads/f9c696ff-09c9-47d3-b899-5f8a84c27de3.png",
+      "url": ""
+    },
+    {
+      "id": "377aafa7-bc65-4414-b1c8-b415e0d599a5",
+      "name": "Radio Partner",
+      "logoUrl": "/uploads/5f8c3157-8267-4ada-8b4b-e314dec51284.png",
+      "url": ""
+    },
+    {
+      "id": "feb245ae-e5fe-476d-97a4-d7034321cdee",
+      "name": "Outdoor Partner",
+      "logoUrl": "/uploads/c0ea0600-d2f5-49cf-9fff-b34276838096.png",
+      "url": ""
+    },
+    {
+      "id": "64d8fffc-3a82-4e4b-b42a-debebd6f2dd6",
+      "name": "Production Partner",
+      "logoUrl": "/uploads/3c31db55-7480-4811-b588-c54cb76a9a47.png",
+      "url": ""
+    },
+    {
+      "id": "aba323b5-00a4-4105-9f9c-d8ec00a540f3",
+      "name": "Event Partner",
+      "logoUrl": "/uploads/32da66c3-0428-4f46-b183-d8ceb17e3981.png",
+      "url": ""
+    },
+    {
+      "id": "5df86d85-cc1b-4009-a924-520af54124c6",
+      "name": "A Project by",
+      "logoUrl": "/uploads/0456d747-2a5e-426e-abe2-349f7d62ec89.png",
+      "url": ""
+    }
+  ]
+}

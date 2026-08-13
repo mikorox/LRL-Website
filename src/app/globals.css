@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+:root {
+  --font-helvetica: "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  --color-navy-950: #021329;
+  --color-navy-900: #051a35;
+  --color-navy-850: #071f3e;
+  --color-navy-800: #0a2444;
+  --color-navy-700: #123057;
+  --color-navy-600: #1c4272;
+  --color-navy-line: #1c3a5e;
+
+  --color-gold-dark: #a67939;
+  --color-gold: #c99a55;
+  --color-gold-light: #e4b277;
+
+  --color-white: #ffffff;
+  --color-ivory: #f4ece0;
+}
+
+@theme inline {
+  --color-navy-950: var(--color-navy-950);
+  --color-navy-900: var(--color-navy-900);
+  --color-navy-850: var(--color-navy-850);
+  --color-navy-800: var(--color-navy-800);
+  --color-navy-700: var(--color-navy-700);
+  --color-navy-600: var(--color-navy-600);
+  --color-navy-line: var(--color-navy-line);
+
+  --color-gold-dark: var(--color-gold-dark);
+  --color-gold: var(--color-gold);
+  --color-gold-light: var(--color-gold-light);
+
+  --color-white: var(--color-white);
+  --color-ivory: var(--color-ivory);
+
+  --font-sans: var(--font-helvetica);
+  --font-accent: var(--font-accent);
+}
+
+body {
+  background: var(--color-navy-950);
+  color: var(--color-white);
+  font-family: var(--font-helvetica);
+}
+
+@layer utilities {
+  .font-accent {
+    font-family: var(--font-accent);
+  }
+
+  .text-outline {
+    -webkit-text-stroke: 1px var(--color-gold-light);
+  }
+
+  .bg-oar-fan {
+    background-image: url("/images/oar-fan.png");
+    background-repeat: no-repeat;
+    background-position: right -10% top -10%;
+    background-size: 60% auto;
+  }
+
+  .section-divider {
+    border-top: 1px solid var(--color-navy-line);
+  }
+}
+
+::selection {
+  background: var(--color-gold-light);
+  color: var(--color-navy-950);
+}
+
+@keyframes countdown-tick {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-countdown-tick {
+  animation: countdown-tick 0.35s ease-out;
+}
+
+@keyframes flag-wave {
+  0%,
+  100% {
+    transform: perspective(600px) rotateY(0deg) skewY(0deg) scaleX(1);
+  }
+  25% {
+    transform: perspective(600px) rotateY(10deg) skewY(1.5deg) scaleX(0.98);
+  }
+  50% {
+    transform: perspective(600px) rotateY(0deg) skewY(0deg) scaleX(1);
+  }
+  75% {
+    transform: perspective(600px) rotateY(-10deg) skewY(-1.5deg) scaleX(0.98);
+  }
+}
+
+.animate-flag-wave {
+  animation: flag-wave 6s ease-in-out infinite;
+  transform-origin: right center;
+}
