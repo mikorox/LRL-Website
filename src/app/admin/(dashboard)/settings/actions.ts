@@ -2,13 +2,15 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/require-admin";
-import { setDoc } from "@/lib/store";
+import { getDoc, setDoc } from "@/lib/store";
 import type { SiteSettings } from "@/lib/data";
 
 const FILE = "settings.json";
 
 export async function updateSettings(formData: FormData) {
   await requireAdmin();
+
+  const existing = await getDoc<SiteSettings>(FILE);
 
   const heroMediaType = String(
     formData.get("heroMediaType") || "none"
@@ -18,6 +20,7 @@ export async function updateSettings(formData: FormData) {
     heroMediaType === "none" ? "" : String(formData.get("heroMediaUrl") || "");
 
   const settings: SiteSettings = {
+    ...existing,
     siteName: String(formData.get("siteName") || ""),
     tagline: String(formData.get("tagline") || ""),
     heroLine1: String(formData.get("heroLine1") || ""),

@@ -80,6 +80,69 @@ export function ImageUploadField({
   );
 }
 
+export function FileUploadField({
+  label,
+  name,
+  accept,
+  initialUrl = "",
+  hint,
+}: {
+  label: string;
+  name: string;
+  accept?: string;
+  initialUrl?: string;
+  hint?: string;
+}) {
+  const [url, setUrl] = useState(initialUrl);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError("");
+    try {
+      const body = new FormData();
+      body.append("file", file);
+      const res = await fetch("/api/admin/upload", { method: "POST", body });
+      if (!res.ok) throw new Error("Upload failed");
+      const data: { url: string } = await res.json();
+      setUrl(data.url);
+    } catch {
+      setError("Upload failed. Please try again.");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <div>
+      <label className="block text-xs font-bold uppercase tracking-widest text-gold-light mb-2">
+        {label}
+      </label>
+
+      {url && (
+        <p className="mb-2 text-xs text-white/60 truncate">
+          Current file: <span className="text-gold-light">{url.split("/").pop()}</span>
+        </p>
+      )}
+
+      <input type="hidden" name={name} value={url} />
+      <input
+        type="file"
+        accept={accept}
+        onChange={handleFileChange}
+        className="w-full text-sm text-white/80 file:mr-4 file:rounded-sm file:border-0 file:bg-gold-light file:px-4 file:py-2 file:text-xs file:font-bold file:uppercase file:tracking-widest file:text-navy-950 hover:file:bg-gold"
+      />
+      {uploading && <p className="mt-1 text-xs text-gold-light">Uploading&hellip;</p>}
+      {error && <p className="mt-1 text-xs text-red-400">{error}</p>}
+      {hint && <p className="mt-1 text-xs text-white/40">{hint}</p>}
+    </div>
+  );
+}
+
 type UploadedFile = { id: string; url: string };
 
 export function MultiImageUploadField({

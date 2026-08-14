@@ -12,6 +12,7 @@
   "venue": "Colombo Rowing Club",
   "contactEmail": "inquiry@lankarowingleague.com",
   "contactAddress": "Colombo, Sri Lanka",
+  "franchisePasswordHash": "",
   "socials": {
     "instagram": "https://www.instagram.com/lankarowingleague",
     "facebook": "https://www.facebook.com/lankarowingleague",

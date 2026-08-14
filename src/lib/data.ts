@@ -85,6 +85,13 @@ export type PartnersDoc = {
   associate: PartnerEntry[];
 };
 
+export type BrandDocument = {
+  id: string;
+  title: string;
+  description: string;
+  fileUrl: string;
+};
+
 export type Registration = {
   id: string;
   submittedAt: string;
@@ -111,6 +118,7 @@ export type SiteSettings = {
   venue: string;
   contactEmail: string;
   contactAddress: string;
+  franchisePasswordHash: string;
   socials: {
     instagram: string;
     facebook: string;
@@ -177,4 +185,12 @@ export function getSettings(): Promise<SiteSettings> {
 
 export function getRegistrations(): Promise<Registration[]> {
   return getCollection<Registration>("registrations.json");
+}
+
+export function getBrandDocuments(): Promise<BrandDocument[]> {
+  return getCollection<BrandDocument>("brand-documents.json");
+}
+
+export function getFranchiseDocuments(): Promise<BrandDocument[]> {
+  return getCollection<BrandDocument>("franchise-documents.json");
 }

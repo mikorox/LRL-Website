@@ -11,6 +11,8 @@ const NAV = [
   { href: "/admin/mentors", label: "Mentors" },
   { href: "/admin/partners", label: "Partners" },
   { href: "/admin/gallery", label: "Gallery" },
+  { href: "/admin/brand", label: "Brand Documents" },
+  { href: "/admin/franchise", label: "Franchise Documents" },
   { href: "/admin/settings", label: "Site Settings" },
 ];
 
