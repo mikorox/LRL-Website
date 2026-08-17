@@ -3,10 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/require-admin";
-import { getCollection, setCollection } from "@/lib/store";
+import { query, execute } from "@/lib/db";
 import type { Team } from "@/lib/data";
-
-const FILE = "teams.json";
 
 function parseLines(value: string): { name: string; role: string }[] {
   return value
@@ -29,17 +27,20 @@ function parseList(value: string): string[] {
 export async function updateTeam(formData: FormData) {
   await requireAdmin();
   const slug = String(formData.get("slug"));
-  const teams = await getCollection<Team>(FILE);
-  const idx = teams.findIndex((t) => t.slug === slug);
-  if (idx === -1) throw new Error("Not found");
 
-  teams[idx] = {
-    ...teams[idx],
+  const rows = await query<{ logo: string; color_primary: string; color_secondary: string }[]>(
+    "SELECT logo, color_primary, color_secondary FROM teams WHERE slug = ? LIMIT 1",
+    [slug]
+  );
+  if (!rows[0]) throw new Error("Not found");
+  const existing = rows[0];
+
+  const team: Omit<Team, "slug"> = {
     name: String(formData.get("name") || ""),
     city: String(formData.get("city") || ""),
-    logo: String(formData.get("logo") || teams[idx].logo),
-    colorPrimary: String(formData.get("colorPrimary") || teams[idx].colorPrimary),
-    colorSecondary: String(formData.get("colorSecondary") || teams[idx].colorSecondary),
+    logo: String(formData.get("logo") || existing.logo),
+    colorPrimary: String(formData.get("colorPrimary") || existing.color_primary),
+    colorSecondary: String(formData.get("colorSecondary") || existing.color_secondary),
     tagline: String(formData.get("tagline") || ""),
     bio: String(formData.get("bio") || ""),
     socials: {
@@ -52,7 +53,17 @@ export async function updateTeam(formData: FormData) {
     squad: parseLines(String(formData.get("squad") || "")),
   };
 
-  await setCollection(FILE, teams);
+  await execute(
+    `UPDATE teams SET name=?, city=?, logo=?, color_primary=?, color_secondary=?, tagline=?, bio=?,
+       social_instagram=?, social_facebook=?, social_youtube=?, social_tiktok=?, squad=?, partners=?
+     WHERE slug=?`,
+    [
+      team.name, team.city, team.logo, team.colorPrimary, team.colorSecondary, team.tagline,
+      team.bio, team.socials.instagram, team.socials.facebook, team.socials.youtube,
+      team.socials.tiktok, JSON.stringify(team.squad), JSON.stringify(team.partners), slug,
+    ]
+  );
+
   revalidatePath("/teams");
   revalidatePath(`/teams/${slug}`);
   revalidatePath("/");

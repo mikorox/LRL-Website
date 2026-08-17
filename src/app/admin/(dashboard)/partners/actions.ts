@@ -2,10 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/require-admin";
-import { getDoc, setDoc } from "@/lib/store";
-import type { PartnersDoc } from "@/lib/data";
+import { execute } from "@/lib/db";
 
-const FILE = "partners.json";
 const TIERS = ["title", "poweredBy", "broadcast", "associate"] as const;
 type Tier = (typeof TIERS)[number];
 
@@ -18,16 +16,13 @@ export async function addPartner(formData: FormData) {
   const tier = String(formData.get("tier"));
   if (!isTier(tier)) throw new Error("Invalid tier");
 
-  const doc = await getDoc<PartnersDoc>(FILE);
-
-  doc[tier].push({
-    id: crypto.randomUUID(),
-    name: String(formData.get("name") || ""),
-    logoUrl: String(formData.get("logoUrl") || ""),
-    url: String(formData.get("url") || ""),
-  });
-
-  await setDoc(FILE, doc);
+  await execute(
+    `INSERT INTO partners (id, tier, name, logo_url, url) VALUES (?, ?, ?, ?, ?)`,
+    [
+      crypto.randomUUID(), tier, String(formData.get("name") || ""),
+      String(formData.get("logoUrl") || ""), String(formData.get("url") || ""),
+    ]
+  );
   revalidatePath("/partners");
   revalidatePath("/");
   revalidatePath("/admin/partners");
@@ -39,10 +34,7 @@ export async function deletePartner(formData: FormData) {
   const id = String(formData.get("id"));
   if (!isTier(tier)) throw new Error("Invalid tier");
 
-  const doc = await getDoc<PartnersDoc>(FILE);
-  doc[tier] = doc[tier].filter((p) => p.id !== id);
-
-  await setDoc(FILE, doc);
+  await execute("DELETE FROM partners WHERE id = ? AND tier = ?", [id, tier]);
   revalidatePath("/partners");
   revalidatePath("/");
   revalidatePath("/admin/partners");

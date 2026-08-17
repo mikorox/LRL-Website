@@ -3,53 +3,44 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/require-admin";
-import { getCollection, setCollection } from "@/lib/store";
+import { query, execute } from "@/lib/db";
 import { uniqueSlug } from "@/lib/slug";
-import type { GalleryAlbum } from "@/lib/data";
-
-const FILE = "galleries.json";
 
 export async function createAlbum(formData: FormData) {
   await requireAdmin();
-  const albums = await getCollection<GalleryAlbum>(FILE);
-
+  const existingSlugs = await query<{ slug: string }[]>("SELECT slug FROM gallery_albums");
   const title = String(formData.get("title") || "");
-  const slug = uniqueSlug(title, albums.map((a) => a.slug));
+  const slug = uniqueSlug(title, existingSlugs.map((s) => s.slug));
+  const id = crypto.randomUUID();
 
-  const album: GalleryAlbum = {
-    id: crypto.randomUUID(),
-    slug,
-    title,
-    date: String(formData.get("date") || ""),
-    coverImage: String(formData.get("coverImage") || ""),
-    photos: [],
-  };
-
-  albums.unshift(album);
-  await setCollection(FILE, albums);
+  await execute(
+    `INSERT INTO gallery_albums (id, slug, title, date, cover_image) VALUES (?, ?, ?, ?, ?)`,
+    [id, slug, title, String(formData.get("date") || ""), String(formData.get("coverImage") || "")]
+  );
   revalidatePath("/gallery");
   revalidatePath("/");
   revalidatePath("/admin/gallery");
-  redirect(`/admin/gallery/${album.id}`);
+  redirect(`/admin/gallery/${id}`);
 }
 
 export async function updateAlbum(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id"));
-  const albums = await getCollection<GalleryAlbum>(FILE);
-  const idx = albums.findIndex((a) => a.id === id);
-  if (idx === -1) throw new Error("Not found");
+  const rows = await query<{ slug: string; cover_image: string }[]>(
+    "SELECT slug, cover_image FROM gallery_albums WHERE id = ? LIMIT 1",
+    [id]
+  );
+  if (!rows[0]) throw new Error("Not found");
 
-  albums[idx] = {
-    ...albums[idx],
-    title: String(formData.get("title") || ""),
-    date: String(formData.get("date") || ""),
-    coverImage: String(formData.get("coverImage") || albums[idx].coverImage),
-  };
-
-  await setCollection(FILE, albums);
+  await execute(
+    `UPDATE gallery_albums SET title=?, date=?, cover_image=? WHERE id=?`,
+    [
+      String(formData.get("title") || ""), String(formData.get("date") || ""),
+      String(formData.get("coverImage") || rows[0].cover_image), id,
+    ]
+  );
   revalidatePath("/gallery");
-  revalidatePath(`/gallery/${albums[idx].slug}`);
+  revalidatePath(`/gallery/${rows[0].slug}`);
   revalidatePath("/");
   revalidatePath("/admin/gallery");
   redirect("/admin/gallery");
@@ -58,8 +49,7 @@ export async function updateAlbum(formData: FormData) {
 export async function deleteAlbum(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id"));
-  const albums = await getCollection<GalleryAlbum>(FILE);
-  await setCollection(FILE, albums.filter((a) => a.id !== id));
+  await execute("DELETE FROM gallery_albums WHERE id = ?", [id]);
   revalidatePath("/gallery");
   revalidatePath("/");
   revalidatePath("/admin/gallery");
@@ -71,20 +61,21 @@ export async function addPhotos(formData: FormData) {
   const urls = formData.getAll("urls").map(String).filter(Boolean);
   if (urls.length === 0) throw new Error("At least one photo is required");
 
-  const albums = await getCollection<GalleryAlbum>(FILE);
-  const idx = albums.findIndex((a) => a.id === albumId);
-  if (idx === -1) throw new Error("Not found");
+  const rows = await query<{ slug: string }[]>(
+    "SELECT slug FROM gallery_albums WHERE id = ? LIMIT 1",
+    [albumId]
+  );
+  if (!rows[0]) throw new Error("Not found");
 
-  const newPhotos = urls.map((url) => ({
-    id: crypto.randomUUID(),
-    url,
-    caption: "",
-  }));
-  albums[idx].photos = [...newPhotos, ...albums[idx].photos];
+  for (const url of urls) {
+    await execute(
+      `INSERT INTO gallery_photos (id, album_id, url, caption) VALUES (?, ?, ?, '')`,
+      [crypto.randomUUID(), albumId, url]
+    );
+  }
 
-  await setCollection(FILE, albums);
   revalidatePath("/gallery");
-  revalidatePath(`/gallery/${albums[idx].slug}`);
+  revalidatePath(`/gallery/${rows[0].slug}`);
   revalidatePath(`/admin/gallery/${albumId}`);
 }
 
@@ -93,14 +84,15 @@ export async function deletePhoto(formData: FormData) {
   const albumId = String(formData.get("albumId"));
   const photoId = String(formData.get("photoId"));
 
-  const albums = await getCollection<GalleryAlbum>(FILE);
-  const idx = albums.findIndex((a) => a.id === albumId);
-  if (idx === -1) throw new Error("Not found");
+  const rows = await query<{ slug: string }[]>(
+    "SELECT slug FROM gallery_albums WHERE id = ? LIMIT 1",
+    [albumId]
+  );
+  if (!rows[0]) throw new Error("Not found");
 
-  albums[idx].photos = albums[idx].photos.filter((p) => p.id !== photoId);
+  await execute("DELETE FROM gallery_photos WHERE id = ? AND album_id = ?", [photoId, albumId]);
 
-  await setCollection(FILE, albums);
   revalidatePath("/gallery");
-  revalidatePath(`/gallery/${albums[idx].slug}`);
+  revalidatePath(`/gallery/${rows[0].slug}`);
   revalidatePath(`/admin/gallery/${albumId}`);
 }

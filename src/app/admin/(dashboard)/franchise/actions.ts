@@ -2,26 +2,21 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/require-admin";
-import { getCollection, setCollection, getDoc, setDoc } from "@/lib/store";
+import { execute } from "@/lib/db";
 import { hashSecret } from "@/lib/auth";
-import type { BrandDocument, SiteSettings } from "@/lib/data";
-
-const FILE = "franchise-documents.json";
 
 export async function addFranchiseDocument(formData: FormData) {
   await requireAdmin();
   const fileUrl = String(formData.get("fileUrl") || "");
   if (!fileUrl) throw new Error("A file is required");
 
-  const documents = await getCollection<BrandDocument>(FILE);
-  documents.unshift({
-    id: crypto.randomUUID(),
-    title: String(formData.get("title") || ""),
-    description: String(formData.get("description") || ""),
-    fileUrl,
-  });
-
-  await setCollection(FILE, documents);
+  await execute(
+    `INSERT INTO franchise_documents (id, title, description, file_url) VALUES (?, ?, ?, ?)`,
+    [
+      crypto.randomUUID(), String(formData.get("title") || ""),
+      String(formData.get("description") || ""), fileUrl,
+    ]
+  );
   revalidatePath("/franchise");
   revalidatePath("/admin/franchise");
 }
@@ -29,8 +24,7 @@ export async function addFranchiseDocument(formData: FormData) {
 export async function deleteFranchiseDocument(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id"));
-  const documents = await getCollection<BrandDocument>(FILE);
-  await setCollection(FILE, documents.filter((d) => d.id !== id));
+  await execute("DELETE FROM franchise_documents WHERE id = ?", [id]);
   revalidatePath("/franchise");
   revalidatePath("/admin/franchise");
 }
@@ -40,9 +34,8 @@ export async function updateFranchisePassword(formData: FormData) {
   const password = String(formData.get("password") || "").trim();
   if (!password) return;
 
-  const settings = await getDoc<SiteSettings>("settings.json");
-  settings.franchisePasswordHash = await hashSecret(password);
-  await setDoc("settings.json", settings);
+  const hash = await hashSecret(password);
+  await execute("UPDATE settings SET franchise_password_hash = ? WHERE id = 1", [hash]);
   revalidatePath("/franchise");
   revalidatePath("/admin/franchise");
 }

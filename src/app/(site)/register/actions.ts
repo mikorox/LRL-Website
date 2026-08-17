@@ -1,30 +1,28 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getCollection, setCollection } from "@/lib/store";
-import type { Registration } from "@/lib/data";
-
-const FILE = "registrations.json";
+import { execute } from "@/lib/db";
 
 export async function createRegistration(formData: FormData) {
-  const registration: Registration = {
-    id: crypto.randomUUID(),
-    submittedAt: new Date().toISOString(),
-    name: String(formData.get("name") || ""),
-    age: String(formData.get("age") || ""),
-    gender: String(formData.get("gender") || ""),
-    weight: String(formData.get("weight") || ""),
-    side: String(formData.get("side") || ""),
-    discipline: String(formData.get("discipline") || ""),
-    role: String(formData.get("role") || ""),
-  };
-
-  if (!registration.name) {
+  const name = String(formData.get("name") || "");
+  if (!name) {
     throw new Error("Name is required");
   }
 
-  const registrations = await getCollection<Registration>(FILE);
-  registrations.unshift(registration);
-  await setCollection(FILE, registrations);
+  await execute(
+    `INSERT INTO registrations (id, submitted_at, name, age, gender, weight, side, discipline, role)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [
+      crypto.randomUUID(),
+      new Date().toISOString(),
+      name,
+      String(formData.get("age") || ""),
+      String(formData.get("gender") || ""),
+      String(formData.get("weight") || ""),
+      String(formData.get("side") || ""),
+      String(formData.get("discipline") || ""),
+      String(formData.get("role") || ""),
+    ]
+  );
   revalidatePath("/admin/registrations");
 }

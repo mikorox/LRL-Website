@@ -3,26 +3,22 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/require-admin";
-import { getCollection, setCollection } from "@/lib/store";
+import { query, execute } from "@/lib/db";
 import { uniqueSlug } from "@/lib/slug";
-import type { CommitteeMember } from "@/lib/data";
-
-const FILE = "committee.json";
 
 export async function createCommitteeMember(formData: FormData) {
   await requireAdmin();
-  const items = await getCollection<CommitteeMember>(FILE);
+  const existingSlugs = await query<{ slug: string }[]>("SELECT slug FROM committee");
   const name = String(formData.get("name") || "");
-  const slug = uniqueSlug(name, items.map((m) => m.slug));
-  items.push({
-    id: crypto.randomUUID(),
-    slug,
-    name,
-    position: String(formData.get("position") || ""),
-    bio: String(formData.get("bio") || ""),
-    photoUrl: String(formData.get("photoUrl") || ""),
-  });
-  await setCollection(FILE, items);
+  const slug = uniqueSlug(name, existingSlugs.map((s) => s.slug));
+
+  await execute(
+    `INSERT INTO committee (id, slug, name, position, bio, photo_url) VALUES (?, ?, ?, ?, ?, ?)`,
+    [
+      crypto.randomUUID(), slug, name, String(formData.get("position") || ""),
+      String(formData.get("bio") || ""), String(formData.get("photoUrl") || ""),
+    ]
+  );
   revalidatePath("/technical-committee");
   revalidatePath("/the-league");
   revalidatePath("/admin/committee");
@@ -32,19 +28,21 @@ export async function createCommitteeMember(formData: FormData) {
 export async function updateCommitteeMember(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id"));
-  const items = await getCollection<CommitteeMember>(FILE);
-  const idx = items.findIndex((m) => m.id === id);
-  if (idx === -1) throw new Error("Not found");
-  items[idx] = {
-    ...items[idx],
-    name: String(formData.get("name") || ""),
-    position: String(formData.get("position") || ""),
-    bio: String(formData.get("bio") || ""),
-    photoUrl: String(formData.get("photoUrl") || ""),
-  };
-  await setCollection(FILE, items);
+  const rows = await query<{ slug: string }[]>(
+    "SELECT slug FROM committee WHERE id = ? LIMIT 1",
+    [id]
+  );
+  if (!rows[0]) throw new Error("Not found");
+
+  await execute(
+    `UPDATE committee SET name=?, position=?, bio=?, photo_url=? WHERE id=?`,
+    [
+      String(formData.get("name") || ""), String(formData.get("position") || ""),
+      String(formData.get("bio") || ""), String(formData.get("photoUrl") || ""), id,
+    ]
+  );
   revalidatePath("/technical-committee");
-  revalidatePath(`/technical-committee/${items[idx].slug}`);
+  revalidatePath(`/technical-committee/${rows[0].slug}`);
   revalidatePath("/the-league");
   revalidatePath("/admin/committee");
   redirect("/admin/committee");
@@ -53,8 +51,7 @@ export async function updateCommitteeMember(formData: FormData) {
 export async function deleteCommitteeMember(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id"));
-  const items = await getCollection<CommitteeMember>(FILE);
-  await setCollection(FILE, items.filter((m) => m.id !== id));
+  await execute("DELETE FROM committee WHERE id = ?", [id]);
   revalidatePath("/technical-committee");
   revalidatePath("/the-league");
   revalidatePath("/admin/committee");

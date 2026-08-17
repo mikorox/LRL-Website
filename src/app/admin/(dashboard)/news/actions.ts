@@ -3,29 +3,24 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/require-admin";
-import { getCollection, setCollection } from "@/lib/store";
+import { query, execute } from "@/lib/db";
 import { uniqueSlug } from "@/lib/slug";
-import type { NewsItem } from "@/lib/data";
-
-const FILE = "news.json";
 
 export async function createNews(formData: FormData) {
   await requireAdmin();
-  const items = await getCollection<NewsItem>(FILE);
+  const existingSlugs = await query<{ slug: string }[]>("SELECT slug FROM news");
 
   const title = String(formData.get("title") || "");
-  const slug = uniqueSlug(title, items.map((n) => n.slug));
+  const slug = uniqueSlug(title, existingSlugs.map((s) => s.slug));
 
-  items.unshift({
-    id: crypto.randomUUID(),
-    slug,
-    date: String(formData.get("date") || ""),
-    title,
-    excerpt: String(formData.get("excerpt") || ""),
-    content: String(formData.get("content") || ""),
-    image: String(formData.get("image") || ""),
-  });
-  await setCollection(FILE, items);
+  await execute(
+    `INSERT INTO news (id, slug, date, title, excerpt, content, image) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+    [
+      crypto.randomUUID(), slug, String(formData.get("date") || ""), title,
+      String(formData.get("excerpt") || ""), String(formData.get("content") || ""),
+      String(formData.get("image") || ""),
+    ]
+  );
   revalidatePath("/news");
   revalidatePath("/");
   revalidatePath("/admin/news");
@@ -35,21 +30,19 @@ export async function createNews(formData: FormData) {
 export async function updateNews(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id"));
-  const items = await getCollection<NewsItem>(FILE);
-  const idx = items.findIndex((n) => n.id === id);
-  if (idx === -1) throw new Error("Not found");
+  const rows = await query<{ slug: string }[]>("SELECT slug FROM news WHERE id = ? LIMIT 1", [id]);
+  if (!rows[0]) throw new Error("Not found");
 
-  items[idx] = {
-    ...items[idx],
-    date: String(formData.get("date") || ""),
-    title: String(formData.get("title") || ""),
-    excerpt: String(formData.get("excerpt") || ""),
-    content: String(formData.get("content") || ""),
-    image: String(formData.get("image") || ""),
-  };
-  await setCollection(FILE, items);
+  await execute(
+    `UPDATE news SET date=?, title=?, excerpt=?, content=?, image=? WHERE id=?`,
+    [
+      String(formData.get("date") || ""), String(formData.get("title") || ""),
+      String(formData.get("excerpt") || ""), String(formData.get("content") || ""),
+      String(formData.get("image") || ""), id,
+    ]
+  );
   revalidatePath("/news");
-  revalidatePath(`/news/${items[idx].slug}`);
+  revalidatePath(`/news/${rows[0].slug}`);
   revalidatePath("/");
   revalidatePath("/admin/news");
   redirect("/admin/news");
@@ -58,8 +51,7 @@ export async function updateNews(formData: FormData) {
 export async function deleteNews(formData: FormData) {
   await requireAdmin();
   const id = String(formData.get("id"));
-  const items = await getCollection<NewsItem>(FILE);
-  await setCollection(FILE, items.filter((n) => n.id !== id));
+  await execute("DELETE FROM news WHERE id = ?", [id]);
   revalidatePath("/news");
   revalidatePath("/");
   revalidatePath("/admin/news");
