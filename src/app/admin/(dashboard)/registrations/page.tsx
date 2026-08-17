@@ -38,6 +38,8 @@ export default async function AdminRegistrationsPage() {
                 <th className="py-3 pr-4">Side</th>
                 <th className="py-3 pr-4">Discipline</th>
                 <th className="py-3 pr-4">Role</th>
+                <th className="py-3 pr-4">Photo</th>
+                <th className="py-3 pr-4">NIC / Passport</th>
                 <th className="py-3 pr-4"></th>
               </tr>
             </thead>
@@ -60,6 +62,34 @@ export default async function AdminRegistrationsPage() {
                   <td className="py-3 pr-4 text-white/80 whitespace-nowrap">{r.side}</td>
                   <td className="py-3 pr-4 text-white/80">{r.discipline}</td>
                   <td className="py-3 pr-4 text-white/80">{r.role}</td>
+                  <td className="py-3 pr-4">
+                    {r.profilePictureUrl ? (
+                      <a href={r.profilePictureUrl} target="_blank" rel="noopener noreferrer">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={r.profilePictureUrl}
+                          alt=""
+                          className="h-10 w-10 rounded-sm object-cover border border-navy-line"
+                        />
+                      </a>
+                    ) : (
+                      <span className="text-white/30 text-xs">&mdash;</span>
+                    )}
+                  </td>
+                  <td className="py-3 pr-4">
+                    {r.nicPassportUrl ? (
+                      <a
+                        href={r.nicPassportUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs font-bold uppercase tracking-widest text-gold-light hover:text-gold"
+                      >
+                        View
+                      </a>
+                    ) : (
+                      <span className="text-white/30 text-xs">&mdash;</span>
+                    )}
+                  </td>
                   <td className="py-3 pr-4">
                     <form action={deleteRegistration}>
                       <input type="hidden" name="id" value={r.id} />

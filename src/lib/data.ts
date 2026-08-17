@@ -87,6 +87,8 @@ type RegistrationRow = {
   side: string;
   discipline: string;
   role: string;
+  profile_picture_url: string;
+  nic_passport_url: string;
 };
 
 type DocumentRow = {
@@ -319,6 +321,8 @@ export type Registration = {
   side: string;
   discipline: string;
   role: string;
+  profilePictureUrl: string;
+  nicPassportUrl: string;
 };
 
 export type SiteSettings = {
@@ -441,6 +445,8 @@ export async function getRegistrations(): Promise<Registration[]> {
     side: r.side,
     discipline: r.discipline,
     role: r.role,
+    profilePictureUrl: r.profile_picture_url,
+    nicPassportUrl: r.nic_passport_url,
   }));
 }
 

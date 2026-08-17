@@ -10,8 +10,10 @@ export async function createRegistration(formData: FormData) {
   }
 
   await execute(
-    `INSERT INTO registrations (id, submitted_at, name, age, gender, weight, side, discipline, role)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `INSERT INTO registrations
+       (id, submitted_at, name, age, gender, weight, side, discipline, role,
+        profile_picture_url, nic_passport_url)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       crypto.randomUUID(),
       new Date().toISOString(),
@@ -22,6 +24,8 @@ export async function createRegistration(formData: FormData) {
       String(formData.get("side") || ""),
       String(formData.get("discipline") || ""),
       String(formData.get("role") || ""),
+      String(formData.get("profilePictureUrl") || ""),
+      String(formData.get("nicPassportUrl") || ""),
     ]
   );
   revalidatePath("/admin/registrations");

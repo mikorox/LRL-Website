@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { createRegistration } from "./actions";
+import ExternalFileUploadField from "@/components/ExternalFileUploadField";
 
 export default function RegisterPage() {
   const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
 
   return (
@@ -50,13 +51,24 @@ export default function RegisterPage() {
             className="space-y-6"
             onSubmit={async (e) => {
               e.preventDefault();
-              setError(false);
+              setError("");
+
+              const formData = new FormData(e.currentTarget);
+              if (!String(formData.get("profilePictureUrl") || "")) {
+                setError("Please upload a profile picture before submitting.");
+                return;
+              }
+              if (!String(formData.get("nicPassportUrl") || "")) {
+                setError("Please upload a NIC or Passport image before submitting.");
+                return;
+              }
+
               setPending(true);
               try {
-                await createRegistration(new FormData(e.currentTarget));
+                await createRegistration(formData);
                 setSubmitted(true);
               } catch {
-                setError(true);
+                setError("Something went wrong submitting your registration. Please try again.");
               } finally {
                 setPending(false);
               }
@@ -92,11 +104,20 @@ export default function RegisterPage() {
               required
             />
 
-            {error && (
-              <p className="text-sm text-red-400">
-                Something went wrong submitting your registration. Please try again.
-              </p>
-            )}
+            <ExternalFileUploadField
+              label="Profile Picture"
+              name="profilePictureUrl"
+              hint="This will be used for the player auction."
+              required
+            />
+            <ExternalFileUploadField
+              label="NIC or Passport Image"
+              name="nicPassportUrl"
+              hint="This is required for identity verification purposes only."
+              required
+            />
+
+            {error && <p className="text-sm text-red-400">{error}</p>}
 
             <button
               type="submit"
