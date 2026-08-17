@@ -5,24 +5,26 @@ import {
   hashSecret,
 } from "@/lib/auth";
 import { getSettings } from "@/lib/data";
+import { getRequestOrigin } from "@/lib/request-origin";
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
   const password = String(formData.get("password") || "");
   const settings = await getSettings();
+  const origin = getRequestOrigin(req);
 
   const candidateHash = password ? await hashSecret(password) : "";
   if (
     !settings.franchisePasswordHash ||
     candidateHash !== settings.franchisePasswordHash
   ) {
-    const url = new URL("/franchise", req.url);
+    const url = new URL("/franchise", origin);
     url.searchParams.set("error", "1");
     return NextResponse.redirect(url, { status: 303 });
   }
 
   const token = await createFranchiseSessionToken(settings.franchisePasswordHash);
-  const url = new URL("/franchise", req.url);
+  const url = new URL("/franchise", origin);
   const res = NextResponse.redirect(url, { status: 303 });
   res.cookies.set(FRANCHISE_COOKIE, token, {
     httpOnly: true,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/auth";
+import { getRequestOrigin } from "@/lib/request-origin";
 
 export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -12,8 +13,7 @@ export async function proxy(req: NextRequest) {
     const token = req.cookies.get(SESSION_COOKIE)?.value;
     const valid = await verifySessionToken(token);
     if (!valid) {
-      const url = req.nextUrl.clone();
-      url.pathname = "/admin/login";
+      const url = new URL("/admin/login", getRequestOrigin(req));
       url.searchParams.set("next", pathname);
       return NextResponse.redirect(url);
     }
