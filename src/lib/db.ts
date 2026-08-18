@@ -62,3 +62,23 @@ export async function query<T>(sql: string, params: SqlParam[] = []): Promise<T>
 export async function execute(sql: string, params: SqlParam[] = []): Promise<void> {
   await withRetry((p) => p.execute(sql, params));
 }
+
+// Temporary diagnostic aid: Hostinger doesn't expose runtime console logs
+// to us, but we do have direct DB access, so route caught errors here
+// instead. Remove once the brand/franchise document upload bug is found.
+export async function logDebug(
+  context: string,
+  err: unknown,
+  extra?: Record<string, unknown>
+): Promise<void> {
+  try {
+    const message = err instanceof Error ? err.message : String(err);
+    const stack = err instanceof Error ? err.stack || "" : "";
+    await execute(
+      "INSERT INTO debug_log (context, message, stack, extra) VALUES (?, ?, ?, ?)",
+      [context, message, stack, extra ? JSON.stringify(extra) : null]
+    );
+  } catch {
+    // best-effort only
+  }
+}
