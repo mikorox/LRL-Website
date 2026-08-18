@@ -9,7 +9,12 @@ export default async function AdminRegistrationsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
-        <h1 className="font-accent text-3xl text-white">Player Registrations</h1>
+        <h1 className="font-accent text-3xl text-white">
+          Player Registrations
+          <span className="ml-3 align-middle inline-flex items-center rounded-full bg-gold-light px-3 py-1 text-sm font-bold text-navy-950">
+            {registrations.length}
+          </span>
+        </h1>
         {registrations.length > 0 && (
           <a
             href="/api/admin/registrations/export"
