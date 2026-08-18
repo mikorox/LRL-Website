@@ -54,6 +54,10 @@ export default function RegisterPage() {
               setError("");
 
               const formData = new FormData(e.currentTarget);
+              if (formData.getAll("role").length === 0) {
+                setError("Please select at least one role.");
+                return;
+              }
               if (!String(formData.get("profilePictureUrl") || "")) {
                 setError("Please upload a profile picture before submitting.");
                 return;
@@ -94,14 +98,13 @@ export default function RegisterPage() {
             <SelectField
               label="Preferred Discipline"
               name="discipline"
-              options={["Sculling", "Sweep"]}
+              options={["Sculling", "Sweep", "Both"]}
               required
             />
-            <SelectField
+            <CheckboxGroupField
               label="Role"
               name="role"
               options={["Oarsman", "Oarswoman", "Coxswain"]}
-              required
             />
 
             <ExternalFileUploadField
@@ -160,6 +163,40 @@ function TextField({
         required={required}
         className="w-full rounded-sm border border-navy-line bg-navy-900 px-4 py-3 text-sm text-white placeholder-white/30 focus:border-gold-light focus:outline-none"
       />
+    </div>
+  );
+}
+
+function CheckboxGroupField({
+  label,
+  name,
+  options,
+}: {
+  label: string;
+  name: string;
+  options: string[];
+}) {
+  return (
+    <div>
+      <label className="block text-xs font-bold uppercase tracking-widest text-gold-light mb-2">
+        {label}
+      </label>
+      <div className="flex flex-wrap gap-4">
+        {options.map((o) => (
+          <label
+            key={o}
+            className="flex items-center gap-2 rounded-sm border border-navy-line bg-navy-900 px-4 py-3 text-sm text-white cursor-pointer hover:border-gold-light transition-colors"
+          >
+            <input
+              type="checkbox"
+              name={name}
+              value={o}
+              className="h-4 w-4 accent-gold-light"
+            />
+            {o}
+          </label>
+        ))}
+      </div>
     </div>
   );
 }

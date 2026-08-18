@@ -8,6 +8,10 @@ export async function createRegistration(formData: FormData) {
   if (!name) {
     throw new Error("Name is required");
   }
+  const roles = formData.getAll("role").map(String).filter(Boolean);
+  if (roles.length === 0) {
+    throw new Error("At least one role is required");
+  }
 
   await execute(
     `INSERT INTO registrations
@@ -23,7 +27,7 @@ export async function createRegistration(formData: FormData) {
       String(formData.get("weight") || ""),
       String(formData.get("side") || ""),
       String(formData.get("discipline") || ""),
-      String(formData.get("role") || ""),
+      roles.join(", "),
       String(formData.get("profilePictureUrl") || ""),
       String(formData.get("nicPassportUrl") || ""),
     ]
