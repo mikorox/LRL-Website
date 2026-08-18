@@ -2,31 +2,23 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/lib/require-admin";
-import { execute, logDebug } from "@/lib/db";
+import { execute } from "@/lib/db";
 import { hashSecret } from "@/lib/auth";
 
 export async function addFranchiseDocument(formData: FormData) {
-  try {
-    await requireAdmin();
-    const fileUrl = String(formData.get("fileUrl") || "");
-    if (!fileUrl) throw new Error("A file is required");
+  await requireAdmin();
+  const fileUrl = String(formData.get("fileUrl") || "");
+  if (!fileUrl) throw new Error("A file is required");
 
-    await execute(
-      `INSERT INTO franchise_documents (id, title, description, file_url) VALUES (?, ?, ?, ?)`,
-      [
-        crypto.randomUUID(), String(formData.get("title") || ""),
-        String(formData.get("description") || ""), fileUrl,
-      ]
-    );
-    revalidatePath("/franchise");
-    revalidatePath("/admin/franchise");
-  } catch (err) {
-    await logDebug("addFranchiseDocument", err, {
-      title: String(formData.get("title") || ""),
-      fileUrl: String(formData.get("fileUrl") || ""),
-    });
-    throw err;
-  }
+  await execute(
+    `INSERT INTO franchise_documents (id, title, description, file_url) VALUES (?, ?, ?, ?)`,
+    [
+      crypto.randomUUID(), String(formData.get("title") || ""),
+      String(formData.get("description") || ""), fileUrl,
+    ]
+  );
+  revalidatePath("/franchise");
+  revalidatePath("/admin/franchise");
 }
 
 export async function deleteFranchiseDocument(formData: FormData) {

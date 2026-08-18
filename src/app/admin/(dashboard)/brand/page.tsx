@@ -1,6 +1,5 @@
 import { getBrandDocuments } from "@/lib/data";
-import { TextField } from "@/components/admin/fields";
-import { FileUploadField } from "@/components/admin/ImageUploadField";
+import AddDocumentForm from "@/components/admin/AddDocumentForm";
 import { addBrandDocument, deleteBrandDocument } from "./actions";
 
 export const dynamic = "force-dynamic";
@@ -46,20 +45,7 @@ export default async function AdminBrandPage() {
         )}
       </div>
 
-      <form
-        action={addBrandDocument}
-        className="space-y-5 max-w-xl rounded-sm border border-dashed border-navy-line p-5"
-      >
-        <TextField label="Title" name="title" required />
-        <TextField label="Description (optional)" name="description" />
-        <FileUploadField label="File" name="fileUrl" hint="PDF, DOC, PPT, ZIP, etc." />
-        <button
-          type="submit"
-          className="inline-flex items-center rounded-sm bg-gold-light px-4 py-2 text-xs font-bold uppercase tracking-widest text-navy-950 hover:bg-gold transition-colors"
-        >
-          Add Document
-        </button>
-      </form>
+      <AddDocumentForm action={addBrandDocument} />
     </div>
   );
 }
