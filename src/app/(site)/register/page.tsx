@@ -8,6 +8,13 @@ export default function RegisterPage() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
+  const [gender, setGender] = useState("");
+
+  const roleOptions = ["Oarsman", "Oarswoman", "Coxswain"].filter((role) => {
+    if (gender === "Male" && role === "Oarswoman") return false;
+    if (gender === "Female" && role === "Oarsman") return false;
+    return true;
+  });
 
   return (
     <div className="relative bg-black overflow-hidden">
@@ -86,6 +93,7 @@ export default function RegisterPage() {
                 name="gender"
                 options={["Male", "Female"]}
                 required
+                onChange={(e) => setGender(e.target.value)}
               />
             </div>
             <TextField label="Weight (kg)" name="weight" type="number" required />
@@ -101,11 +109,7 @@ export default function RegisterPage() {
               options={["Sculling", "Sweep", "Both"]}
               required
             />
-            <CheckboxGroupField
-              label="Role"
-              name="role"
-              options={["Oarsman", "Oarswoman", "Coxswain"]}
-            />
+            <CheckboxGroupField label="Role" name="role" options={roleOptions} />
 
             <ExternalFileUploadField
               label="Profile Picture"
@@ -206,11 +210,13 @@ function SelectField({
   name,
   options,
   required,
+  onChange,
 }: {
   label: string;
   name: string;
   options: string[];
   required?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }) {
   return (
     <div>
@@ -225,6 +231,7 @@ function SelectField({
         name={name}
         required={required}
         defaultValue=""
+        onChange={onChange}
         className="w-full rounded-sm border border-navy-line bg-navy-900 px-4 py-3 text-sm text-white focus:border-gold-light focus:outline-none"
       >
         <option value="" disabled>
