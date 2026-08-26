@@ -20,6 +20,8 @@ export async function GET(req: NextRequest) {
   const headers = [
     "Submitted At",
     "Name",
+    "Email",
+    "Phone",
     "Age",
     "Gender",
     "Weight",
@@ -31,7 +33,7 @@ export async function GET(req: NextRequest) {
   ];
   const rows = registrations.map((r) =>
     [
-      r.submittedAt, r.name, r.age, r.gender, r.weight, r.side, r.discipline, r.role,
+      r.submittedAt, r.name, r.email, r.phone, r.age, r.gender, r.weight, r.side, r.discipline, r.role,
       r.profilePictureUrl, r.nicPassportUrl,
     ]
       .map((v) => csvEscape(String(v)))

@@ -131,7 +131,9 @@ CREATE TABLE IF NOT EXISTS registrations (
   discipline VARCHAR(32) NOT NULL DEFAULT '',
   role VARCHAR(255) NOT NULL DEFAULT '', -- comma-separated; multiple roles can be selected
   profile_picture_url VARCHAR(500) NOT NULL DEFAULT '',
-  nic_passport_url VARCHAR(500) NOT NULL DEFAULT ''
+  nic_passport_url VARCHAR(500) NOT NULL DEFAULT '',
+  email VARCHAR(255) NOT NULL DEFAULT '',
+  phone VARCHAR(50) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 -- display order: seq DESC (matches old unshift)
 

@@ -37,6 +37,8 @@ export default async function AdminRegistrationsPage() {
               <tr className="border-b border-navy-line text-xs uppercase tracking-widest text-gold-light">
                 <th className="py-3 pr-4">Submitted</th>
                 <th className="py-3 pr-4">Name</th>
+                <th className="py-3 pr-4">Email</th>
+                <th className="py-3 pr-4">Phone</th>
                 <th className="py-3 pr-4">Age</th>
                 <th className="py-3 pr-4">Gender</th>
                 <th className="py-3 pr-4">Weight</th>
@@ -61,6 +63,8 @@ export default async function AdminRegistrationsPage() {
                     })}
                   </td>
                   <td className="py-3 pr-4 font-semibold text-white whitespace-nowrap">{r.name}</td>
+                  <td className="py-3 pr-4 text-white/80 whitespace-nowrap">{r.email}</td>
+                  <td className="py-3 pr-4 text-white/80 whitespace-nowrap">{r.phone}</td>
                   <td className="py-3 pr-4 text-white/80">{r.age}</td>
                   <td className="py-3 pr-4 text-white/80">{r.gender}</td>
                   <td className="py-3 pr-4 text-white/80">{r.weight}</td>

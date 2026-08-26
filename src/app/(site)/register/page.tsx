@@ -87,6 +87,10 @@ export default function RegisterPage() {
           >
             <TextField label="Name" name="name" required />
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <TextField label="Email" name="email" type="email" required />
+              <TextField label="Phone Number" name="phone" type="tel" required />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <TextField label="Age" name="age" type="number" required />
               <SelectField
                 label="Gender"

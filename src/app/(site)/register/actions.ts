@@ -8,6 +8,14 @@ export async function createRegistration(formData: FormData) {
   if (!name) {
     throw new Error("Name is required");
   }
+  const email = String(formData.get("email") || "");
+  if (!email) {
+    throw new Error("Email is required");
+  }
+  const phone = String(formData.get("phone") || "");
+  if (!phone) {
+    throw new Error("Phone number is required");
+  }
   const roles = formData.getAll("role").map(String).filter(Boolean);
   if (roles.length === 0) {
     throw new Error("At least one role is required");
@@ -15,13 +23,15 @@ export async function createRegistration(formData: FormData) {
 
   await execute(
     `INSERT INTO registrations
-       (id, submitted_at, name, age, gender, weight, side, discipline, role,
+       (id, submitted_at, name, email, phone, age, gender, weight, side, discipline, role,
         profile_picture_url, nic_passport_url)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       crypto.randomUUID(),
       new Date().toISOString(),
       name,
+      email,
+      phone,
       String(formData.get("age") || ""),
       String(formData.get("gender") || ""),
       String(formData.get("weight") || ""),
