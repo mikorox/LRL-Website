@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getRegistrations } from "@/lib/data";
 import { deleteRegistration } from "./actions";
 
@@ -5,6 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminRegistrationsPage() {
   const registrations = await getRegistrations();
+  const missingContactCount = registrations.filter((r) => !r.email || !r.phone).length;
 
   return (
     <div>
@@ -24,9 +26,19 @@ export default async function AdminRegistrationsPage() {
           </a>
         )}
       </div>
-      <p className="text-sm text-white/60 mb-6">
+      <p className="text-sm text-white/60 mb-2">
         Submissions from the public athlete registration form.
       </p>
+      <div className="mb-6">
+        {missingContactCount > 0 && (
+          <Link
+            href="/admin/registrations/missing-contact"
+            className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gold-light hover:text-gold"
+          >
+            {missingContactCount} missing email/phone &rarr;
+          </Link>
+        )}
+      </div>
 
       {registrations.length === 0 ? (
         <p className="text-white/50 text-sm">No registrations yet.</p>
