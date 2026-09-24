@@ -44,6 +44,15 @@ type CommitteeRow = {
   photo_url: string;
 };
 
+type CoachRow = {
+  id: string;
+  slug: string;
+  name: string;
+  position: string;
+  bio: string;
+  photo_url: string;
+};
+
 type MentorRow = {
   id: string;
   team: string;
@@ -180,6 +189,17 @@ function committeeFromRow(r: CommitteeRow): CommitteeMember {
   };
 }
 
+function coachFromRow(r: CoachRow): Coach {
+  return {
+    id: r.id,
+    slug: r.slug,
+    name: r.name,
+    position: r.position,
+    bio: r.bio || "",
+    photoUrl: r.photo_url,
+  };
+}
+
 function mentorFromRow(r: MentorRow): Mentor {
   return {
     id: r.id,
@@ -259,6 +279,15 @@ export type ScheduleRow = {
 };
 
 export type CommitteeMember = {
+  id: string;
+  slug: string;
+  name: string;
+  position: string;
+  bio: string;
+  photoUrl: string;
+};
+
+export type Coach = {
   id: string;
   slug: string;
   name: string;
@@ -390,6 +419,16 @@ export async function getCommitteeMemberBySlug(
     [slug]
   );
   return rows[0] ? committeeFromRow(rows[0]) : undefined;
+}
+
+export async function getCoaches(): Promise<Coach[]> {
+  const rows = await query<CoachRow[]>("SELECT * FROM coaches ORDER BY seq ASC");
+  return rows.map(coachFromRow);
+}
+
+export async function getCoachBySlug(slug: string): Promise<Coach | undefined> {
+  const rows = await query<CoachRow[]>("SELECT * FROM coaches WHERE slug = ? LIMIT 1", [slug]);
+  return rows[0] ? coachFromRow(rows[0]) : undefined;
 }
 
 export async function getMentors(): Promise<Mentor[]> {

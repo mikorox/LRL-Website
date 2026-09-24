@@ -8,6 +8,7 @@ const NAV = [
   { href: "/admin/teams", label: "Teams" },
   { href: "/admin/registrations", label: "Registrations" },
   { href: "/admin/committee", label: "Technical Committee" },
+  { href: "/admin/coaches", label: "Coaches" },
   { href: "/admin/mentors", label: "Mentors" },
   { href: "/admin/partners", label: "Partners" },
   { href: "/admin/gallery", label: "Gallery" },

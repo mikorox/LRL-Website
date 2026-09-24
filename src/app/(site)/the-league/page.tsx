@@ -1,11 +1,12 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getCommittee } from "@/lib/data";
+import { getCommittee, getCoaches } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
 export default async function TheLeaguePage() {
   const committee = await getCommittee();
+  const coaches = await getCoaches();
 
   return (
     <div className="relative bg-black overflow-hidden">
@@ -88,6 +89,51 @@ export default async function TheLeaguePage() {
               )}
               <Link
                 href={`/technical-committee/${member.slug}`}
+                className="mt-4 inline-flex items-center rounded-sm border border-white/20 px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-white hover:border-gold-light hover:text-gold-light transition-colors"
+              >
+                View Profile
+              </Link>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-16 border-t border-navy-line">
+        <h2 className="font-accent text-3xl sm:text-4xl mb-3">Coaches</h2>
+        <p className="text-white/70 leading-relaxed max-w-2xl mb-12">
+          The coaching staff behind the Lanka Rowing League, bringing decades
+          of combined national and international rowing experience to every
+          franchise.
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+          {coaches.map((coach) => (
+            <div key={coach.id} className="text-center">
+              <div className="mx-auto h-28 w-28 rounded-full bg-navy-900 border border-navy-line flex items-center justify-center overflow-hidden">
+                {coach.photoUrl ? (
+                  <Image
+                    src={coach.photoUrl}
+                    alt={coach.name}
+                    width={112}
+                    height={112}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <span className="font-accent text-2xl text-gold-light">
+                    {coach.name
+                      .split(" ")
+                      .map((w) => w[0])
+                      .slice(0, 2)
+                      .join("")}
+                  </span>
+                )}
+              </div>
+              <h3 className="mt-4 font-semibold text-white">{coach.name}</h3>
+              {coach.position && (
+                <p className="mt-1 text-sm text-white/60">{coach.position}</p>
+              )}
+              <Link
+                href={`/coaches/${coach.slug}`}
                 className="mt-4 inline-flex items-center rounded-sm border border-white/20 px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-white hover:border-gold-light hover:text-gold-light transition-colors"
               >
                 View Profile

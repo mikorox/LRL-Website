@@ -13,6 +13,7 @@ const NAV_LINKS = [
 
 const RESOURCE_LINKS = [
   { href: "/technical-committee", label: "Technical Committee" },
+  { href: "/coaches", label: "Coaches" },
   { href: "/register", label: "Athlete Registration" },
   { href: "/contact", label: "Contact" },
 ];
