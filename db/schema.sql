@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS settings (
   hero_media_url VARCHAR(500) NOT NULL DEFAULT '',
   registration_heading VARCHAR(255) NOT NULL DEFAULT '',
   registration_subtitle TEXT,
+  registrations_open TINYINT(1) NOT NULL DEFAULT 1,
   championship_date VARCHAR(64) NOT NULL DEFAULT '',
   venue VARCHAR(255) NOT NULL DEFAULT '',
   contact_email VARCHAR(255) NOT NULL DEFAULT '',

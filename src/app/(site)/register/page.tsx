@@ -1,20 +1,10 @@
-"use client";
+import { getSettings } from "@/lib/data";
+import RegisterForm from "./RegisterForm";
 
-import { useState } from "react";
-import { createRegistration } from "./actions";
-import ExternalFileUploadField from "@/components/ExternalFileUploadField";
+export const dynamic = "force-dynamic";
 
-export default function RegisterPage() {
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState("");
-  const [pending, setPending] = useState(false);
-  const [gender, setGender] = useState("");
-
-  const roleOptions = ["Oarsman", "Oarswoman", "Coxswain"].filter((role) => {
-    if (gender === "Male" && role === "Oarswoman") return false;
-    if (gender === "Female" && role === "Oarsman") return false;
-    return true;
-  });
+export default async function RegisterPage() {
+  const settings = await getSettings();
 
   return (
     <div className="relative bg-black overflow-hidden">
@@ -43,210 +33,22 @@ export default function RegisterPage() {
 
       <section className="relative bg-gradient-to-b from-black to-navy-950">
         <div className="relative mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-16">
-        {submitted ? (
-          <div className="rounded-sm border border-gold-light bg-navy-900 p-8 text-center">
-            <h2 className="font-accent text-2xl text-gold-light">
-              Registration Received
-            </h2>
-            <p className="mt-3 text-white/70">
-              Thank you for registering. The LRL team will be in touch ahead
-              of the player draft.
-            </p>
-          </div>
-        ) : (
-          <form
-            className="space-y-6"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              setError("");
-
-              const formData = new FormData(e.currentTarget);
-              if (formData.getAll("role").length === 0) {
-                setError("Please select at least one role.");
-                return;
-              }
-              if (!String(formData.get("profilePictureUrl") || "")) {
-                setError("Please upload a profile picture before submitting.");
-                return;
-              }
-              if (!String(formData.get("nicPassportUrl") || "")) {
-                setError("Please upload a NIC or Passport image before submitting.");
-                return;
-              }
-
-              setPending(true);
-              try {
-                await createRegistration(formData);
-                setSubmitted(true);
-              } catch {
-                setError("Something went wrong submitting your registration. Please try again.");
-              } finally {
-                setPending(false);
-              }
-            }}
-          >
-            <TextField label="Name" name="name" required />
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <TextField label="Email" name="email" type="email" required />
-              <TextField label="Phone Number" name="phone" type="tel" required />
+          {settings.registrationsOpen ? (
+            <RegisterForm />
+          ) : (
+            <div className="rounded-sm border border-navy-line bg-navy-900 p-8 text-center">
+              <h2 className="font-accent text-2xl text-gold-light">
+                Registrations Are Closed
+              </h2>
+              <p className="mt-3 text-white/70">
+                Registration for the Lanka Rowing League player pool is
+                currently closed. Please check back later or follow our
+                social channels for updates.
+              </p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <TextField label="Age" name="age" type="number" required />
-              <SelectField
-                label="Gender"
-                name="gender"
-                options={["Male", "Female"]}
-                required
-                onChange={(e) => setGender(e.target.value)}
-              />
-            </div>
-            <TextField label="Weight (kg)" name="weight" type="number" required />
-            <SelectField
-              label="Stroke Side / Bow Side"
-              name="side"
-              options={["Stroke Side", "Bow Side", "Either"]}
-              required
-            />
-            <SelectField
-              label="Preferred Discipline"
-              name="discipline"
-              options={["Sculling", "Sweep", "Both"]}
-              required
-            />
-            <CheckboxGroupField label="Role" name="role" options={roleOptions} />
-
-            <ExternalFileUploadField
-              label="Profile Picture"
-              name="profilePictureUrl"
-              hint="This will be used for the player auction."
-              required
-            />
-            <ExternalFileUploadField
-              label="NIC or Passport Image"
-              name="nicPassportUrl"
-              hint="This is required for identity verification purposes only."
-              required
-            />
-
-            {error && <p className="text-sm text-red-400">{error}</p>}
-
-            <button
-              type="submit"
-              disabled={pending}
-              className="w-full inline-flex items-center justify-center rounded-sm bg-gold-light px-6 py-3 text-xs font-bold uppercase tracking-widest text-navy-950 hover:bg-gold transition-colors disabled:opacity-60"
-            >
-              {pending ? "Submitting..." : "Submit Registration"}
-            </button>
-          </form>
-        )}
+          )}
         </div>
       </section>
-    </div>
-  );
-}
-
-function TextField({
-  label,
-  name,
-  type = "text",
-  required,
-}: {
-  label: string;
-  name: string;
-  type?: string;
-  required?: boolean;
-}) {
-  return (
-    <div>
-      <label
-        htmlFor={name}
-        className="block text-xs font-bold uppercase tracking-widest text-gold-light mb-2"
-      >
-        {label}
-      </label>
-      <input
-        id={name}
-        name={name}
-        type={type}
-        required={required}
-        className="w-full rounded-sm border border-navy-line bg-navy-900 px-4 py-3 text-sm text-white placeholder-white/30 focus:border-gold-light focus:outline-none"
-      />
-    </div>
-  );
-}
-
-function CheckboxGroupField({
-  label,
-  name,
-  options,
-}: {
-  label: string;
-  name: string;
-  options: string[];
-}) {
-  return (
-    <div>
-      <label className="block text-xs font-bold uppercase tracking-widest text-gold-light mb-2">
-        {label}
-      </label>
-      <div className="flex flex-wrap gap-4">
-        {options.map((o) => (
-          <label
-            key={o}
-            className="flex items-center gap-2 rounded-sm border border-navy-line bg-navy-900 px-4 py-3 text-sm text-white cursor-pointer hover:border-gold-light transition-colors"
-          >
-            <input
-              type="checkbox"
-              name={name}
-              value={o}
-              className="h-4 w-4 accent-gold-light"
-            />
-            {o}
-          </label>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function SelectField({
-  label,
-  name,
-  options,
-  required,
-  onChange,
-}: {
-  label: string;
-  name: string;
-  options: string[];
-  required?: boolean;
-  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-}) {
-  return (
-    <div>
-      <label
-        htmlFor={name}
-        className="block text-xs font-bold uppercase tracking-widest text-gold-light mb-2"
-      >
-        {label}
-      </label>
-      <select
-        id={name}
-        name={name}
-        required={required}
-        defaultValue=""
-        onChange={onChange}
-        className="w-full rounded-sm border border-navy-line bg-navy-900 px-4 py-3 text-sm text-white focus:border-gold-light focus:outline-none"
-      >
-        <option value="" disabled>
-          Select {label.toLowerCase()}
-        </option>
-        {options.map((o) => (
-          <option key={o} value={o}>
-            {o}
-          </option>
-        ))}
-      </select>
     </div>
   );
 }

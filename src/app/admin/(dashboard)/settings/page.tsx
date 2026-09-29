@@ -76,6 +76,15 @@ export default async function AdminSettingsPage() {
             defaultValue={settings.registrationSubtitle}
             rows={3}
           />
+          <SelectField
+            label="Registration Status"
+            name="registrationsOpen"
+            defaultValue={settings.registrationsOpen ? "open" : "closed"}
+            options={[
+              { value: "open", label: "Open — the registration form is live" },
+              { value: "closed", label: "Closed — visitors see a closed message" },
+            ]}
+          />
         </section>
 
         <section className="space-y-5">

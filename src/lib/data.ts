@@ -119,6 +119,7 @@ type SettingsRow = {
   hero_media_url: string;
   registration_heading: string;
   registration_subtitle: string;
+  registrations_open: number;
   championship_date: string;
   venue: string;
   contact_email: string;
@@ -227,6 +228,7 @@ function settingsFromRow(r: SettingsRow): SiteSettings {
     heroMediaUrl: r.hero_media_url,
     registrationHeading: r.registration_heading,
     registrationSubtitle: r.registration_subtitle || "",
+    registrationsOpen: !!r.registrations_open,
     championshipDate: r.championship_date,
     venue: r.venue,
     contactEmail: r.contact_email,
@@ -368,6 +370,7 @@ export type SiteSettings = {
   heroMediaUrl: string;
   registrationHeading: string;
   registrationSubtitle: string;
+  registrationsOpen: boolean;
   championshipDate: string;
   venue: string;
   contactEmail: string;
