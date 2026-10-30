@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { FaInstagram, FaFacebook, FaYoutube, FaTiktok } from "react-icons/fa";
 import TeamCrest from "@/components/TeamCrest";
-import { getTeamBySlug } from "@/lib/data";
+import { getSettings, getTeamBySlug } from "@/lib/data";
+import { getLeagueHubSquad } from "@/lib/leaguehub";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,13 @@ export default async function TeamDetailPage({
   const { slug } = await params;
   const team = await getTeamBySlug(slug);
   if (!team) notFound();
+
+  const [settings, hubSquad] = await Promise.all([
+    getSettings(),
+    getLeagueHubSquad(team.name),
+  ]);
+  // LeagueHub is the source of truth; fall back to the squad stored in the DB.
+  const squad = hubSquad ?? team.squad.map((p) => ({ name: p.name, imageUrl: "" }));
 
   const socials = [
     { href: team.socials.instagram, label: "Instagram", Icon: FaInstagram },
@@ -74,14 +82,42 @@ export default async function TeamDetailPage({
 
         <div>
           <h2 className="font-accent text-2xl text-gold-light mb-4">Squad</h2>
-          {team.squad.length === 0 ? (
+          {squad.length === 0 ? (
             <p className="text-white/60 text-sm">Squad announcement coming soon.</p>
           ) : (
-            <ul className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {team.squad.map((p) => (
-                <li key={p.name} className="rounded-sm border border-navy-line p-4 text-sm">
-                  <p className="font-semibold">{p.name}</p>
-                  <p className="text-white/60">{p.role}</p>
+            <ul className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              {squad.map((p) => (
+                <li
+                  key={p.name}
+                  className="relative overflow-hidden rounded-sm border border-navy-line"
+                  style={{
+                    background: `linear-gradient(135deg, ${team.colorPrimary}59 0%, #021329 80%)`,
+                  }}
+                >
+                  {team.logo && (
+                    <div
+                      className="pointer-events-none absolute -right-8 top-1/2 -translate-y-1/2 h-28 w-28 opacity-20"
+                      style={{
+                        backgroundImage: `url(${team.logo})`,
+                        backgroundSize: "contain",
+                        backgroundRepeat: "no-repeat",
+                        backgroundPosition: "center",
+                      }}
+                      aria-hidden="true"
+                    />
+                  )}
+                  <div className="relative flex items-center gap-3 p-4 min-h-20">
+                    {settings.showPlayerPhotos && p.imageUrl && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={p.imageUrl}
+                        alt=""
+                        loading="lazy"
+                        className="h-12 w-12 shrink-0 rounded-full object-cover border border-white/20"
+                      />
+                    )}
+                    <p className="font-semibold text-sm leading-snug">{p.name}</p>
+                  </div>
                 </li>
               ))}
             </ul>

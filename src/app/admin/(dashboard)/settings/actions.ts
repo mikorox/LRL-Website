@@ -21,7 +21,7 @@ export async function updateSettings(formData: FormData) {
     `UPDATE settings SET
        site_name=?, tagline=?, hero_line1=?, hero_line2=?, hero_subtitle=?,
        hero_media_type=?, hero_media_url=?, registration_heading=?, registration_subtitle=?,
-       registrations_open=?,
+       registrations_open=?, show_player_photos=?,
        championship_date=?, venue=?, contact_email=?, contact_address=?,
        social_instagram=?, social_facebook=?, social_youtube=?, social_tiktok=?
      WHERE id=1`,
@@ -36,6 +36,7 @@ export async function updateSettings(formData: FormData) {
       String(formData.get("registrationHeading") || ""),
       String(formData.get("registrationSubtitle") || ""),
       String(formData.get("registrationsOpen") || "open") === "open" ? 1 : 0,
+      String(formData.get("showPlayerPhotos") || "hidden") === "shown" ? 1 : 0,
       `${String(formData.get("championshipDate") || "")}:00+05:30`,
       String(formData.get("venue") || ""),
       String(formData.get("contactEmail") || ""),

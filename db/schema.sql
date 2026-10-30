@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS settings (
   registration_heading VARCHAR(255) NOT NULL DEFAULT '',
   registration_subtitle TEXT,
   registrations_open TINYINT(1) NOT NULL DEFAULT 1,
+  show_player_photos TINYINT(1) NOT NULL DEFAULT 0,
   championship_date VARCHAR(64) NOT NULL DEFAULT '',
   venue VARCHAR(255) NOT NULL DEFAULT '',
   contact_email VARCHAR(255) NOT NULL DEFAULT '',

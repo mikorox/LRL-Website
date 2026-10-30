@@ -89,6 +89,21 @@ export default async function AdminSettingsPage() {
 
         <section className="space-y-5">
           <h2 className="text-xs font-bold uppercase tracking-widest text-white/50">
+            Team Squads
+          </h2>
+          <SelectField
+            label="Player Photos"
+            name="showPlayerPhotos"
+            defaultValue={settings.showPlayerPhotos ? "shown" : "hidden"}
+            options={[
+              { value: "hidden", label: "Hidden — names only" },
+              { value: "shown", label: "Shown — photo on each squad card" },
+            ]}
+          />
+        </section>
+
+        <section className="space-y-5">
+          <h2 className="text-xs font-bold uppercase tracking-widest text-white/50">
             Championship Weekend
           </h2>
           <div>

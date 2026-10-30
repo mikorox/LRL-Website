@@ -120,6 +120,7 @@ type SettingsRow = {
   registration_heading: string;
   registration_subtitle: string;
   registrations_open: number;
+  show_player_photos: number;
   championship_date: string;
   venue: string;
   contact_email: string;
@@ -229,6 +230,7 @@ function settingsFromRow(r: SettingsRow): SiteSettings {
     registrationHeading: r.registration_heading,
     registrationSubtitle: r.registration_subtitle || "",
     registrationsOpen: !!r.registrations_open,
+    showPlayerPhotos: !!r.show_player_photos,
     championshipDate: r.championship_date,
     venue: r.venue,
     contactEmail: r.contact_email,
@@ -371,6 +373,7 @@ export type SiteSettings = {
   registrationHeading: string;
   registrationSubtitle: string;
   registrationsOpen: boolean;
+  showPlayerPhotos: boolean;
   championshipDate: string;
   venue: string;
   contactEmail: string;
