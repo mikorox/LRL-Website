@@ -30,16 +30,16 @@ const norm = (s: string) => s.trim().toLowerCase();
 export async function getLeagueHubSquad(teamName: string): Promise<SquadPlayer[] | null> {
   if (!process.env.LEAGUEHUB_TOKEN) return null;
   try {
-    const seasons = (await get<ApiList<ApiSeason>>(`/v1/leagues/${LEAGUE_ID}/seasons?limit=200`)).data;
+    const seasons = (await get<ApiList<ApiSeason>>(`/v1/leagues/${LEAGUE_ID}/seasons?limit=100`)).data;
     // Season names are years ("2026"); the highest is the current one.
     const season = [...seasons].sort((a, b) => b.name.localeCompare(a.name))[0];
     if (!season) return null;
 
-    const teams = (await get<ApiList<ApiTeam>>(`/v1/seasons/${season.id}/teams?limit=200`)).data;
+    const teams = (await get<ApiList<ApiTeam>>(`/v1/seasons/${season.id}/teams?limit=100`)).data;
     const team = teams.find((t) => norm(t.name) === norm(teamName));
     if (!team) return null;
 
-    const players = (await get<ApiList<ApiPlayer>>(`/v1/teams/${team.id}/players?limit=200`)).data;
+    const players = (await get<ApiList<ApiPlayer>>(`/v1/teams/${team.id}/players?limit=100`)).data;
     return players
       .map((p) => ({ name: p.full_name, imageUrl: p.image_url || "" }))
       .sort((a, b) => a.name.localeCompare(b.name));
