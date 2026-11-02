@@ -1,5 +1,4 @@
-// Official race schedule. Team names use the site's spelling
-// (the printed schedule says "Sigiriya Lions"; the franchise is "Sigiri Lions").
+// Official race schedule. Team names must match the team names on the site.
 
 export type Race = {
   no: number;
@@ -28,7 +27,7 @@ const r = (no: number, time: string, boat: string, home: string, away: string): 
 const KK = "Kandy Kings";
 const GG = "Galle Galleons";
 const MM = "Mirissa Mavericks";
-const SL = "Sigiri Lions";
+const SL = "Sigiriya Lions";
 const TT = "Trinco Titans";
 const CC = "Colombo Capitals";
 

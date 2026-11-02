@@ -20,6 +20,9 @@ async function get<T>(path: string): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+// Teams whose name differs between the website and LeagueHub.
+const LEAGUEHUB_NAMES: Record<string, string> = { "sigiriya lions": "sigiri lions" };
+
 const norm = (s: string) => s.trim().toLowerCase();
 
 /**
@@ -36,7 +39,9 @@ export async function getLeagueHubSquad(teamName: string): Promise<SquadPlayer[]
     if (!season) return null;
 
     const teams = (await get<ApiList<ApiTeam>>(`/v1/seasons/${season.id}/teams?limit=100`)).data;
-    const team = teams.find((t) => norm(t.name) === norm(teamName));
+    const wanted = norm(teamName);
+    const hubName = LEAGUEHUB_NAMES[wanted] ?? wanted;
+    const team = teams.find((t) => norm(t.name) === hubName || norm(t.name) === wanted);
     if (!team) return null;
 
     const players = (await get<ApiList<ApiPlayer>>(`/v1/teams/${team.id}/players?limit=100`)).data;
