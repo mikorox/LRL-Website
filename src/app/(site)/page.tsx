@@ -232,7 +232,7 @@ export default async function Home() {
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24">
           <div className="max-w-xl">
             <p className="text-xs font-bold uppercase tracking-[0.35em] text-gold-light mb-4">
-              Join the League
+              Championship Weekend
             </p>
             <h2 className="font-accent text-4xl sm:text-5xl leading-[0.95] mb-6">
               {settings.registrationHeading}
