@@ -240,12 +240,14 @@ export default async function Home() {
             <p className="max-w-md text-white/70 text-base sm:text-lg leading-relaxed mb-8">
               {settings.registrationSubtitle}
             </p>
-            <Link
-              href="/register"
+            <a
+              href="https://tickets.eventistrysports.com/events/lanka-rowing-league-26"
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center rounded-sm bg-gold-light px-8 py-4 text-xs font-bold uppercase tracking-widest text-navy-950 hover:bg-gold transition-colors"
             >
-              Register Now
-            </Link>
+              Buy Tickets
+            </a>
           </div>
         </div>
       </section>

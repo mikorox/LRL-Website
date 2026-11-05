@@ -125,12 +125,14 @@ export default function Header({ settings }: { settings: SiteSettings }) {
                 </a>
               ))}
             </div>
-            <Link
-              href="/register"
+            <a
+              href="https://tickets.eventistrysports.com/events/lanka-rowing-league-26"
+              target="_blank"
+              rel="noopener noreferrer"
               className="ml-2 inline-flex items-center rounded-sm bg-gold-light px-4 py-2 text-xs font-bold uppercase tracking-widest text-navy-950 hover:bg-gold transition-colors"
             >
-              Register
-            </Link>
+              Buy Tickets
+            </a>
           </div>
 
           <button
@@ -162,13 +164,15 @@ export default function Header({ settings }: { settings: SiteSettings }) {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/register"
+            <a
+              href="https://tickets.eventistrysports.com/events/lanka-rowing-league-26"
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setOpen(false)}
               className="mt-4 inline-flex items-center justify-center rounded-sm bg-gold-light px-4 py-3 text-xs font-bold uppercase tracking-widest text-navy-950"
             >
-              Register
-            </Link>
+              Buy Tickets
+            </a>
           </nav>
         </div>
       )}
